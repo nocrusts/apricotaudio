@@ -32,7 +32,7 @@ class Handler:
 
 
 builder = Gtk.Builder()
-builder.add_from_file("apricotmainwindow.glade")
+builder.add_from_file("mainwindow.glade")
 builder.connect_signals(Handler())
 window = builder.get_object("window")
 window.show_all()
