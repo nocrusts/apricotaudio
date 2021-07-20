@@ -1,0 +1,3 @@
+An audio player without any frills like playlists.
+
+Requires pydub and python3-gi
