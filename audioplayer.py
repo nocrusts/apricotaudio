@@ -2,6 +2,7 @@
 from pydub import AudioSegment
 from pydub.playback import _play_with_simpleaudio
 
+
 class PlaySound:
     def __init__(self, file):  # Used to initialize an audio object
         self.audio = AudioSegment.from_file(file)  # audiosegment object
@@ -14,7 +15,7 @@ class PlaySound:
         if self.isPlaying:
             self.stop()  # stops existing sound thread.
         if AudioSegment:
-            self.playback = _play_with_simpleaudio(self.audio)
+            self.playback = _play_with_simpleaudio(self.audio)  # https://github.com/jiaaro/pydub/issues/160
         self.isPlaying = True
 
     def stop(self):  # Used to stop an audio object
@@ -24,5 +25,3 @@ class PlaySound:
 #  Workflow:
 #  Create a new var = PlaySound("file") object.
 #  Start audio with var.play()
-
-
