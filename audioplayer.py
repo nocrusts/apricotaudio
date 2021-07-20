@@ -21,5 +21,8 @@ class PlaySound:
         self.playback.stop()
         self.isPlaying = False
 
+#  Workflow:
+#  Create a new var = PlaySound("file") object.
+#  Start audio with var.play()
 
 
