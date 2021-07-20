@@ -20,6 +20,7 @@
     <property name="default_height">250</property>
     <property name="icon_name">multimedia-player</property>
     <property name="has_resize_grip">True</property>
+    <signal name="remove" handler="onDestroy" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -36,6 +37,8 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="use_stock">True</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="playClicked" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">3</property>
@@ -49,6 +52,7 @@
             <property name="tooltip_text" translatable="yes">Select a file to play.</property>
             <property name="filter">filefilter1</property>
             <property name="title" translatable="yes">Select a file to play.</property>
+            <signal name="file-set" handler="fileChosen" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">2</property>
