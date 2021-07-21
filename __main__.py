@@ -1,7 +1,5 @@
 import audioplayer
 import gi
-import time
-import threading
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
@@ -18,6 +16,7 @@ class Handler:
         Gtk.main_quit()
 
     def fileChosen(self, widget):  # when file chooser selects a file
+
         self.Audio = widget.get_filename()
 
         if self.sound is None:
@@ -36,7 +35,8 @@ class Handler:
 
         print("Song path: " + str(self.Audio))
         print("Song Length in ms: " + str(self.sound.audio_length))  # pydub uses ms
-        STElapsed.set_text(" " + str(self.sound.DisplaySongLength))
+        slider_val.set_value(0)
+        STElapsed.set_text("0:00 / " + str(self.sound.DisplaySongLength))
 
     def playClicked(self, widget):
         if self.PlayButtonMode == 0:
@@ -54,10 +54,15 @@ class Handler:
         self.sliderPos = (max(min(int(value), 100), 0))
 
     def sliderReleased(self, widget, event):
-        self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))
+        if self.PlayButtonMode == 0 and self.sound:
+            self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))
+            stop_start.set_label("gtk-media-pause")
+
 
     def sliderPressed(self, widget, event):
-        self.sound.stop()
+        if self.PlayButtonMode == 1:
+            self.sound.stop()
+            stop_start.set_label("gtk-media-play")
 
 
 builder = Gtk.Builder()
@@ -67,5 +72,6 @@ window = builder.get_object("window")
 stop_start = builder.get_object("song_play_pause")
 STElapsed = builder.get_object("song_time_elapsed")
 STRemaining = builder.get_object("song_time_remaining")
+slider_val = builder.get_object("adjustment1")
 window.show_all()
 Gtk.main()

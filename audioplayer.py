@@ -1,9 +1,11 @@
 # This file handles audio playback.
-# TODO: Fix MASSIVE corruption effect when playing audio(m4a only?) files.
+# TODO: Fix corruption effect when playing audio(m4a only?) files.
+# I'm not managing time elapsed + time remaining in this library because I don't want to create multiple threads for
+# updating and tracking time.
+
 from pydub import AudioSegment
 import simpleaudio
 import io  # we don't want to make tempfiles for audiosegment to write to.
-from pydub.playback import _play_with_simpleaudio
 
 
 class PlaySound:
@@ -48,6 +50,7 @@ class PlaySound:
         minutes = int((ms/60000) % 60)
         #  maybe adding hours at some point, not right now.
         self.DisplaySongLength = str(minutes) + ":" + str(seconds)
+
 
 
 #  Workflow:
