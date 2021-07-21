@@ -24,6 +24,8 @@ class PlaySound:
             self.stop()  # stops existing sound thread.
         if ms_position:  # this insanity because simpleaudio REQUIRES channels, bytes per sample, and sample rate
             processed_data = self.audio[ms_position:]
+            self._buffer = None
+            self._buffer = io.BytesIO()
             processed_data.export(self._buffer, format="raw")  # unsure if this is the best approach
             raw_data = self._buffer.getvalue()
 
