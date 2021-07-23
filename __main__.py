@@ -1,16 +1,20 @@
+#  TODO: Use GTK Timer + g_timeout_source_new() to manage keeping track of time.
+
 import audioplayer
 import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
-
+from gi.repository import GLib
 
 class Handler:
     def __init__(self):
         self.PlayButtonMode = 0  # 0 is paused, 1 is playing
         self.Audio = None  # tracks filename of audio file
         self.sound = None  # audioplayer object
-        self.sliderPos = 0
+        self.sliderPos = 0  # slider's position
+        self.audio_timer = None  # leave it uninitialized till needed.
+        self.s_elapsed = 0  # tracks seconds elapsed according to the slider position.
 
     def onDestroy(self, *args):  # used for closing window
         Gtk.main_quit()
@@ -31,38 +35,47 @@ class Handler:
             self.PlayButtonMode = 0
             self.sliderPos = 0
             stop_start.set_label("gtk-media-play")
-            self.sound.ms_elapsed = 0
 
         print("Song path: " + str(self.Audio))
         print("Song Length in ms: " + str(self.sound.audio_length))  # pydub uses ms
-        slider_val.set_value(0)
+        slider_val.set_value(0)  # reset slider to 0
         STElapsed.set_text("0:00 / " + str(self.sound.DisplaySongLength))
 
     def playClicked(self, widget):
-        if self.PlayButtonMode == 0:
-            print("Starting Sound.")
-            self.sound.play(0)
-            widget.set_label("gtk-media-pause")
-            self.PlayButtonMode = 1
-        else:
-            self.sound.stop()
-            print("Stopped Sound.")
-            self.PlayButtonMode = 0
-            widget.set_label("gtk-media-play")
+        if self.sound: # ensure that self.sound exists first, otherwise we get an error.
+            if self.PlayButtonMode == 0:
+                print("Starting Sound.")
+                self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))
+                self.audio_timer = GLib.timeout_add_seconds(interval=1, function=self.timeTracker)  # start timer
+                widget.set_label("gtk-media-pause")
+                self.PlayButtonMode = 1
+            else:
+                self.sound.stop()
+                print("Stopped Sound.")
+                self.PlayButtonMode = 0
+                widget.set_label("gtk-media-play")
 
     def sliderMoved(self, gtkRange, scroll, value):
         self.sliderPos = (max(min(int(value), 100), 0))
 
     def sliderReleased(self, widget, event):
-        if self.PlayButtonMode == 0 and self.sound:
-            self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))
+        if self.sound:
+            self.PlayButtonMode == 1
+            self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))  # sound.play is in ms
+            self.audio_timer = GLib.timeout_add_seconds(interval=1, function=self.timeTracker)  # start timer
             stop_start.set_label("gtk-media-pause")
-
 
     def sliderPressed(self, widget, event):
         if self.PlayButtonMode == 1:
             self.sound.stop()
             stop_start.set_label("gtk-media-play")
+
+    def timeTracker(self):
+        if self.PlayButtonMode == 0:
+            self.s_elapsed = 0
+            return False
+        self.s_elapsed += 1
+        return True
 
 
 builder = Gtk.Builder()
@@ -74,4 +87,4 @@ STElapsed = builder.get_object("song_time_elapsed")
 STRemaining = builder.get_object("song_time_remaining")
 slider_val = builder.get_object("adjustment1")
 window.show_all()
-Gtk.main()
+mainloop = Gtk.main()
