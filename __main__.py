@@ -2,6 +2,7 @@
 
 import audioplayer
 import gi
+import time
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
@@ -13,7 +14,6 @@ class Handler:
         self.Audio = None  # tracks filename of audio file
         self.sound = None  # audioplayer object
         self.sliderPos = 0  # slider's position
-        self.audio_timer = None  # leave it uninitialized till needed.
         self.s_elapsed = 0  # tracks seconds elapsed according to the slider position.
 
     def onDestroy(self, *args):  # used for closing window
@@ -45,7 +45,7 @@ class Handler:
         if self.sound: # ensure that self.sound exists first, otherwise we get an error.
             if self.PlayButtonMode == 0:
                 print("Starting Sound.")
-                # self.audio_timer = GLib.timeout_add_seconds(interval=1, function=self.timeTracker)  # start timer
+                GLib.timeout_add(interval=1000, function=self.timeTracker)  # start timer
                 self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))
                 widget.set_label("gtk-media-pause")
                 self.PlayButtonMode = 1
@@ -60,7 +60,7 @@ class Handler:
 
     def sliderReleased(self, widget, event):
         if self.sound:
-            # self.audio_timer = GLib.timeout_add_seconds(interval=1, function=self.timeTracker)  # start timer
+            GLib.timeout_add(interval=1000, function=self.timeTracker)  # start timer
             self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))  # sound.play is in ms
             stop_start.set_label("gtk-media-pause")
             self.PlayButtonMode = 1
@@ -70,6 +70,21 @@ class Handler:
             self.sound.stop()
             stop_start.set_label("gtk-media-play")
             self.PlayButtonMode = 0
+
+    def timeTracker(self):
+        self.s_elapsed += 1
+        songPosition = int((self.sliderPos / 100) * self.sound.audio_length) + (self.s_elapsed * 1000)
+        # Formula: percentage of slider completed * audio length = slider's position in ms
+        # slider's position in ms + time elapsed in ms = final time
+        songPositionSec = round(songPosition / 1000, 2) # rough estimate
+        slider_val.set_value(round((songPosition / self.sound.audio_length * 100), 2))
+        # the slider is a percentage of the song completed
+
+        if not self.sound.isPlaying or songPosition >= self.sound.audio_length:
+            self.s_elapsed = 0
+            return False
+        else:
+            return True
 
     # def timeTracker(self):
     #     print((self.sliderPos / 100) * self.sound.audio_length / 1000 + self.s_elapsed)
