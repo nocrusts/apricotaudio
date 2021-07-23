@@ -76,12 +76,17 @@ class Handler:
         songPosition = int((self.sliderPos / 100) * self.sound.audio_length) + (self.s_elapsed * 1000)
         # Formula: percentage of slider completed * audio length = slider's position in ms
         # slider's position in ms + time elapsed in ms = final time
-        songPositionSec = round(songPosition / 1000, 2) # rough estimate
+        # songPositionSec = round(songPosition / 1000, 2) # rough estimate (unused for now)
+
+        if songPosition >= self.sound.audio_length:
+            return False # funny number prevention
 
         slider_val.set_value(round((songPosition / self.sound.audio_length * 100), 2))
         # the slider is a percentage of the song completed
 
         STElapsed.set_text(self.sound.generateDisplaySongPosition(songPosition) + " / " + self.sound.DisplaySongLength)
+
+        STRemaining.set_text("-" + self.sound.generateDisplayRemaining(songPosition))
 
         if not self.sound.isPlaying or songPosition >= self.sound.audio_length:
             self.s_elapsed = 0

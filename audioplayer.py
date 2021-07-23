@@ -50,7 +50,7 @@ class PlaySound:
         minutes = int((ms/60000) % 60)
         #  maybe adding hours at some point, not right now.
         self.DisplaySongLength = str(minutes) + ":" + str(seconds)
-        return(self.DisplaySongLength)
+        return self.DisplaySongLength
 
     def generateDisplaySongPosition(self, ms):
         seconds = int((ms/1000) % 60)
@@ -59,10 +59,19 @@ class PlaySound:
         elif seconds < 10:
             seconds = "0" + str(seconds)
         minutes = int((ms/60000) % 60)
-        self.DisplaySongPosition = str(minutes) + ":" + str(seconds)
+        self.DisplaySongPosition = str(minutes) + ":" + str(seconds) # not available until this function is called once
+        return self.DisplaySongPosition
 
-        return(self.DisplaySongPosition)
-
+    def generateDisplayRemaining(self, ms):
+        timeRemaining = self.audio_length - ms
+        seconds = int((timeRemaining/1000) % 60)
+        if seconds == 0:
+            seconds = "00"
+        elif seconds < 10:
+            seconds = "0" + str(seconds)
+        minutes = int((timeRemaining/60000) % 60)
+        self.DisplayRemaining = str(minutes) + ":" + str(seconds)  # not available until this function is called once
+        return self.DisplayRemaining
 
 #  Workflow:
 #  Create a new var = PlaySound("file") object.
