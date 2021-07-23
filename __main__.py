@@ -45,8 +45,8 @@ class Handler:
         if self.sound: # ensure that self.sound exists first, otherwise we get an error.
             if self.PlayButtonMode == 0:
                 print("Starting Sound.")
+                # self.audio_timer = GLib.timeout_add_seconds(interval=1, function=self.timeTracker)  # start timer
                 self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))
-                self.audio_timer = GLib.timeout_add_seconds(interval=1, function=self.timeTracker)  # start timer
                 widget.set_label("gtk-media-pause")
                 self.PlayButtonMode = 1
             else:
@@ -60,9 +60,8 @@ class Handler:
 
     def sliderReleased(self, widget, event):
         if self.sound:
-            self.PlayButtonMode == 1
+            # self.audio_timer = GLib.timeout_add_seconds(interval=1, function=self.timeTracker)  # start timer
             self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))  # sound.play is in ms
-            self.audio_timer = GLib.timeout_add_seconds(interval=1, function=self.timeTracker)  # start timer
             stop_start.set_label("gtk-media-pause")
 
     def sliderPressed(self, widget, event):
@@ -70,13 +69,24 @@ class Handler:
             self.sound.stop()
             stop_start.set_label("gtk-media-play")
 
-    def timeTracker(self):
-        if self.PlayButtonMode == 0:
-            self.s_elapsed = 0
-            return False
-        self.s_elapsed += 1
-        return True
-
+    # def timeTracker(self):
+    #     print((self.sliderPos / 100) * self.sound.audio_length / 1000 + self.s_elapsed)
+    #     print(self.sound.audio_length / 1000)
+    #     self.s_elapsed += 1
+    #     song_pos = str(self.sound.generateDisplaySongPosition(
+    #         starting_ms=int((self.sliderPos / 100) * self.sound.audio_length / 1000),
+    #         time_elapsed=self.s_elapsed
+    #         )
+    #     )
+    #     STElapsed.set_text(song_pos + " / " + str(self.sound.DisplaySongLength))
+    #     # Return logic for GTK
+    #     if self.sound.isPlaying == False:
+    #         self.s_elapsed = 0
+    #         return False
+    #     if (self.sliderPos / 100) * self.sound.audio_length / 1000 + self.s_elapsed == self.sound.audio_length / 1000:
+    #         return False
+    #     return True
+    #  need to rethink this
 
 builder = Gtk.Builder()
 builder.add_from_file("mainwindow.glade")

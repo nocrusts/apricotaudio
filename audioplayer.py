@@ -12,10 +12,9 @@ class PlaySound:
     def __init__(self, file):  # Used to initialize an audio object
         self.audio = AudioSegment.from_file(file)  # audiosegment object
         self.audio_length = len(self.audio)  # length of audio in ms
-        self._generateDisplaySongLength(self.audio_length)
+        self.generateDisplaySongLength(self.audio_length)
         self.isPlaying = None  # is it playing?
         self.playback = None  # simpleaudio object
-        self.DisplaySongLength  # the M:SS display
         self._buffer = io.BytesIO()
 
     def play(self, ms_position):  # Used to play an audio object
@@ -42,7 +41,7 @@ class PlaySound:
         self.playback.stop()
         self.isPlaying = False
 
-    def _generateDisplaySongLength(self, ms):
+    def generateDisplaySongLength(self, ms):
         #  1000ms is 1 second
         #  60 seconds is 1 minute
         #  60000 ms in 1 minute
@@ -52,7 +51,20 @@ class PlaySound:
         minutes = int((ms/60000) % 60)
         #  maybe adding hours at some point, not right now.
         self.DisplaySongLength = str(minutes) + ":" + str(seconds)
+        return(self.DisplaySongLength)
 
+    # def generateDisplaySongPosition(self, starting_ms, time_elapsed):
+    #     # time elapsed is in seconds to save cpu cycles with GTK's loop (change at some point?)
+    #     starting_s = int(starting_ms / 1000)
+    #     song_raw_position_seconds = starting_s + time_elapsed
+    #     song_position_minutes = int((song_raw_position_seconds / 60 % 60))
+    #     song_position_seconds = int((song_raw_position_seconds % 60))
+    #     if song_position_seconds == 0:
+    #         song_position_seconds = "00"
+    #     elif song_position_seconds < 10:
+    #         song_position_seconds = "0" + str(song_position_seconds)
+    #     self.DisplaySongPosition = str(song_position_minutes) + ":" + str(song_position_seconds)
+    #     return(self.DisplaySongPosition)
 
 
 #  Workflow:
