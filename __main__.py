@@ -63,11 +63,13 @@ class Handler:
             # self.audio_timer = GLib.timeout_add_seconds(interval=1, function=self.timeTracker)  # start timer
             self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))  # sound.play is in ms
             stop_start.set_label("gtk-media-pause")
+            self.PlayButtonMode = 1
 
     def sliderPressed(self, widget, event):
         if self.PlayButtonMode == 1:
             self.sound.stop()
             stop_start.set_label("gtk-media-play")
+            self.PlayButtonMode = 0
 
     # def timeTracker(self):
     #     print((self.sliderPos / 100) * self.sound.audio_length / 1000 + self.s_elapsed)
