@@ -7,7 +7,6 @@ from pydub import AudioSegment
 import simpleaudio
 import io  # we don't want to make tempfiles for audiosegment to write to.
 
-
 class PlaySound:
     def __init__(self, file):  # Used to initialize an audio object
         self.audio = AudioSegment.from_file(file)  # audiosegment object
@@ -53,18 +52,16 @@ class PlaySound:
         self.DisplaySongLength = str(minutes) + ":" + str(seconds)
         return(self.DisplaySongLength)
 
-    def generateDisplaySongPosition(self, starting_ms, time_elapsed):
-        # GTK's loop should only fire every 1 second.
-        starting_s = int(starting_ms / 1000)
-        song_raw_position_seconds = starting_s + time_elapsed
-        song_position_minutes = int((song_raw_position_seconds / 60 % 60))
-        song_position_seconds = int((song_raw_position_seconds % 60))
-        if song_position_seconds == 0:
-            song_position_seconds = "00"
-        elif song_position_seconds < 10:
-            song_position_seconds = "0" + str(song_position_seconds)
-        self.DisplaySongPosition = str(song_position_minutes) + ":" + str(song_position_seconds)
-        return self.DisplaySongPosition
+    def generateDisplaySongPosition(self, ms):
+        seconds = int((ms/1000) % 60)
+        if seconds == 0:
+            seconds = "00"
+        elif seconds < 10:
+            seconds = "0" + str(seconds)
+        minutes = int((ms/60000) % 60)
+        self.DisplaySongPosition = str(minutes) + ":" + str(seconds)
+
+        return(self.DisplaySongPosition)
 
 
 #  Workflow:

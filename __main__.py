@@ -77,8 +77,11 @@ class Handler:
         # Formula: percentage of slider completed * audio length = slider's position in ms
         # slider's position in ms + time elapsed in ms = final time
         songPositionSec = round(songPosition / 1000, 2) # rough estimate
+
         slider_val.set_value(round((songPosition / self.sound.audio_length * 100), 2))
         # the slider is a percentage of the song completed
+
+        STElapsed.set_text(self.sound.generateDisplaySongPosition(songPosition) + " / " + self.sound.DisplaySongLength)
 
         if not self.sound.isPlaying or songPosition >= self.sound.audio_length:
             self.s_elapsed = 0
