@@ -94,25 +94,6 @@ class Handler:
         else:
             return True
 
-    # def timeTracker(self):
-    #     print((self.sliderPos / 100) * self.sound.audio_length / 1000 + self.s_elapsed)
-    #     print(self.sound.audio_length / 1000)
-    #     self.s_elapsed += 1
-    #     song_pos = str(self.sound.generateDisplaySongPosition(
-    #         starting_ms=int((self.sliderPos / 100) * self.sound.audio_length / 1000),
-    #         time_elapsed=self.s_elapsed
-    #         )
-    #     )
-    #     STElapsed.set_text(song_pos + " / " + str(self.sound.DisplaySongLength))
-    #     # Return logic for GTK
-    #     if self.sound.isPlaying == False:
-    #         self.s_elapsed = 0
-    #         return False
-    #     if (self.sliderPos / 100) * self.sound.audio_length / 1000 + self.s_elapsed == self.sound.audio_length / 1000:
-    #         return False
-    #     return True
-    #  need to rethink this
-
 builder = Gtk.Builder()
 builder.add_from_file("mainwindow.glade")
 builder.connect_signals(Handler())
