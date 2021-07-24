@@ -77,10 +77,8 @@ class Handler:
             self.PlayButtonMode = 0
 
     def timeTracker(self):
-        print(slider_val.get_value())
         self.s_elapsed += 1
         songPosition = int((self.sliderPos / 100) * self.sound.audio_length) + (self.s_elapsed * 1000)
-        print(songPosition)
         # Formula: percentage of slider completed * audio length = slider's position in ms
         # slider's position in ms + time elapsed in ms = final time
         # songPositionSec = round(songPosition / 1000, 2) # rough estimate (unused for now)
