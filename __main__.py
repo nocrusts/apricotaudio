@@ -34,6 +34,8 @@ class Handler:
             self.sound = audioplayer.PlaySound(self.Audio)
             self.PlayButtonMode = 0
             self.sliderPos = 0
+            self.s_elapsed = 0
+            slider_val.set_value(0)
             stop_start.set_label("gtk-media-play")
 
         print("Song path: " + str(self.Audio))
@@ -56,10 +58,13 @@ class Handler:
                 widget.set_label("gtk-media-play")
 
     def sliderMoved(self, gtkRange, scroll, value):
+        self.sliderMoving = 1
         self.sliderPos = (max(min(int(value), 100), 0))
+        self.timeTracker()
 
     def sliderReleased(self, widget, event):
         if self.sound:
+            self.sliderMoving = 0
             GLib.timeout_add(interval=1000, function=self.timeTracker)  # start timer
             self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))  # sound.play is in ms
             stop_start.set_label("gtk-media-pause")
@@ -72,13 +77,15 @@ class Handler:
             self.PlayButtonMode = 0
 
     def timeTracker(self):
+        print(slider_val.get_value())
         self.s_elapsed += 1
         songPosition = int((self.sliderPos / 100) * self.sound.audio_length) + (self.s_elapsed * 1000)
+        print(songPosition)
         # Formula: percentage of slider completed * audio length = slider's position in ms
         # slider's position in ms + time elapsed in ms = final time
         # songPositionSec = round(songPosition / 1000, 2) # rough estimate (unused for now)
 
-        if songPosition >= self.sound.audio_length:
+        if songPosition >= self.sound.audio_length and self.sliderMoving == 0:
             return False # funny number prevention
 
         slider_val.set_value(round((songPosition / self.sound.audio_length * 100), 2))
