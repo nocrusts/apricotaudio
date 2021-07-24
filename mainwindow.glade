@@ -12,7 +12,7 @@
       <mime-type>audio/*</mime-type>
     </mime-types>
   </object>
-  <object class="GtkApplicationWindow">
+  <object class="GtkApplicationWindow" id="window">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Apricot</property>
     <property name="window_position">center</property>
@@ -20,6 +20,7 @@
     <property name="default_height">250</property>
     <property name="icon_name">multimedia-player</property>
     <property name="has_resize_grip">True</property>
+    <signal name="remove" handler="onDestroy" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -30,31 +31,19 @@
         <property name="row_homogeneous">True</property>
         <property name="column_homogeneous">True</property>
         <child>
-          <object class="GtkButton" id="song_play_pause">
-            <property name="label">gtk-media-play</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="use_stock">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">3</property>
-            <property name="top_attach">7</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkFileChooserButton" id="song_file">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="tooltip_text" translatable="yes">Select a file to play.</property>
             <property name="filter">filefilter1</property>
             <property name="title" translatable="yes">Select a file to play.</property>
+            <signal name="file-set" handler="fileChosen" swapped="no"/>
           </object>
           <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">2</property>
-            <property name="width">3</property>
-            <property name="height">3</property>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+            <property name="width">5</property>
+            <property name="height">5</property>
           </packing>
         </child>
         <child>
@@ -65,8 +54,24 @@
           </object>
           <packing>
             <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
+            <property name="top_attach">5</property>
             <property name="width">5</property>
+            <property name="height">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="song_play_pause">
+            <property name="label">gtk-media-play</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="use_stock">True</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="playClicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="top_attach">10</property>
           </packing>
         </child>
         <child>
@@ -76,27 +81,32 @@
             <property name="adjustment">adjustment1</property>
             <property name="show_fill_level">True</property>
             <property name="fill_level">100</property>
-            <property name="round_digits">1</property>
+            <property name="round_digits">2</property>
             <property name="digits">0</property>
             <property name="draw_value">False</property>
             <property name="value_pos">left</property>
+            <signal name="button-press-event" handler="sliderPressed" swapped="no"/>
+            <signal name="button-release-event" handler="sliderReleased" swapped="no"/>
+            <signal name="change-value" handler="sliderMoved" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">2</property>
-            <property name="top_attach">6</property>
+            <property name="top_attach">7</property>
             <property name="width">3</property>
+            <property name="height">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="song_time_elapsed">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">0:00 / 1:00</property>
+            <property name="label" translatable="yes">0:00 / 0:00</property>
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">6</property>
+            <property name="top_attach">7</property>
             <property name="width">2</property>
+            <property name="height">2</property>
           </packing>
         </child>
         <child>
@@ -107,30 +117,10 @@
           </object>
           <packing>
             <property name="left_attach">5</property>
-            <property name="top_attach">6</property>
+            <property name="top_attach">7</property>
             <property name="width">2</property>
+            <property name="height">2</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
         </child>
         <child>
           <placeholder/>
