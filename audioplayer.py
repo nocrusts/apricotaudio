@@ -1,7 +1,6 @@
 # This file handles audio playback.
 # TODO: Fix corruption effect when playing audio(m4a only?) files.
-# I'm not managing time elapsed + time remaining in this library because I don't want to create multiple threads for
-# updating and tracking time.
+
 
 from pydub import AudioSegment
 import simpleaudio

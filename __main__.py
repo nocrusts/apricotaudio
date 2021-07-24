@@ -1,5 +1,3 @@
-#  TODO: Use GTK Timer + g_timeout_source_new() to manage keeping track of time.
-
 import audioplayer
 import gi
 import time
