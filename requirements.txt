@@ -1,0 +1,2 @@
+simpleaudio~=1.0.4
+pydub~=0.23.1

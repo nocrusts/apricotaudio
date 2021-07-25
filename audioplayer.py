@@ -6,6 +6,7 @@ from pydub import AudioSegment
 import simpleaudio
 import io  # we don't want to make tempfiles for audiosegment to write to.
 
+
 class PlaySound:
     def __init__(self, file):  # Used to initialize an audio object
         self.audio = AudioSegment.from_file(file)  # audiosegment object
