@@ -13,6 +13,6 @@ Current Issues
 
 Apricot is a new application that would significantly benefit from community contribution and testing. Please feel free to provide insight!
 
--Some .m4a files sound distorted when played with apricot. 
+-Some files sound distorted when played with apricot, this is currently being actively investigated. 
 
 
