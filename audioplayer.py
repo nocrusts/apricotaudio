@@ -1,5 +1,4 @@
 # This file handles audio playback.
-# TODO: Fix corruption effect when playing audio(m4a only?) files.
 
 
 from pydub import AudioSegment
