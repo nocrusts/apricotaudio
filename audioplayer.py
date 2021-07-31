@@ -27,7 +27,7 @@ class PlaySound:
             processed_data.export(self._buffer, format="raw")  # unsure if this is the best approach
             raw_data = self._buffer.getvalue()
 
-        if AudioSegment:
+        if raw_data:
             self.playback = simpleaudio.play_buffer(
                 raw_data,
                 num_channels=self.audio.channels,
