@@ -4,7 +4,7 @@
 from pydub import AudioSegment
 import simpleaudio
 import io  # we don't want to make tempfiles for audiosegment to write to.
-
+from pygame import mixer  # SIMPLEAUDIO DOESN'T WORK ! ARGH
 
 class PlaySound:
     def __init__(self, file):  # Used to initialize an audio object
@@ -14,29 +14,35 @@ class PlaySound:
         self.isPlaying = None  # is it playing?
         self.playback = None  # simpleaudio object
         self._buffer = io.BytesIO()
+        mixer.init()
 
     def play(self, ms_position):  # Used to play an audio object
-        raw_data = self.audio.raw_data
+        # we need to convert all files into WAV first, as it seems simpleaudio is not always compatible.
+        # raw_data = self.audio.raw_data
         if self.isPlaying:
             self.stop()  # stops existing sound thread.
-        if ms_position:  # this insanity because simpleaudio REQUIRES channels, bytes per sample, and sample rate
-            processed_data = self.audio[ms_position:]
-            self._buffer = None
-            self._buffer = io.BytesIO()
-            processed_data.export(self._buffer, format="raw")  # unsure if this is the best approach
-            raw_data = self._buffer.getvalue()
+        # if ms_position:  # this insanity because simpleaudio REQUIRES channels, bytes per sample, and sample rate
+        # no longer necessary, we're just going to always convert.
+        processed_data = self.audio[ms_position:]
+        self._buffer = None
+        self._buffer = io.BytesIO()
+        processed_data.export(self._buffer, format="ogg")
+        if self._buffer:
+            mixer.music.load(self._buffer)
+            mixer.music.play()
 
-        if raw_data:
-            self.playback = simpleaudio.play_buffer(
-                raw_data,
-                num_channels=self.audio.channels,
-                bytes_per_sample=self.audio.sample_width,
-                sample_rate=self.audio.frame_rate
-            )  # https://github.com/jiaaro/pydub/issues/160
+            # self.playback = simpleaudio.play_buffer(
+            #     tempAudSeg.raw_data,
+            #     num_channels=tempAudSeg.channels,
+            #     bytes_per_sample=tempAudSeg.sample_width,
+            #     sample_rate=tempAudSeg.frame_rate
+            # )  # https://github.com/jiaaro/pydub/issues/160
+
+
         self.isPlaying = True
 
     def stop(self):  # Used to stop an audio object
-        self.playback.stop()
+        mixer.music.stop()
         self.isPlaying = False
 
     def generateDisplaySongLength(self, ms):
