@@ -2,9 +2,9 @@
 
 
 from pydub import AudioSegment
-import simpleaudio
 import io  # we don't want to make tempfiles for audiosegment to write to.
 from pygame import mixer  # SIMPLEAUDIO DOESN'T WORK ! ARGH
+
 
 class PlaySound:
     def __init__(self, file):  # Used to initialize an audio object
@@ -38,7 +38,6 @@ class PlaySound:
             #     sample_rate=tempAudSeg.frame_rate
             # )  # https://github.com/jiaaro/pydub/issues/160
 
-
         self.isPlaying = True
 
     def stop(self):  # Used to stop an audio object
@@ -64,7 +63,7 @@ class PlaySound:
         elif seconds < 10:
             seconds = "0" + str(seconds)
         minutes = int((ms/60000) % 60)
-        self.DisplaySongPosition = str(minutes) + ":" + str(seconds) # not available until this function is called once
+        self.DisplaySongPosition = str(minutes) + ":" + str(seconds)  # not available until this function is called once
         return self.DisplaySongPosition
 
     def generateDisplayRemaining(self, ms):
@@ -81,4 +80,3 @@ class PlaySound:
 #  Workflow:
 #  Create a new var = PlaySound("file") object.
 #  Start audio with var.play()
-
