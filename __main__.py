@@ -16,7 +16,7 @@ class Handler:
         self.sliderPos = 0  # slider's position
         self.s_elapsed = 0  # tracks seconds elapsed according to the slider position.
         self._song_finished = False
-        self._timer_running = 0
+        self._timer_id = None
 
     def onDestroy(self, *args):  # used for closing window
         Gtk.main_quit()
@@ -49,7 +49,9 @@ class Handler:
         if self.sound:  # ensure that self.sound exists first, otherwise we get an error.
             if self.PlayButtonMode == 0:
                 print("Starting Sound.")
-                GLib.timeout_add(interval=1000, function=self.timeTracker)  # start timer
+                if self._timer_id:
+                    GLib.source_remove(self._timer_id)
+                self._timer_id = GLib.timeout_add(interval=1000, function=self.timeTracker)  # start timer
                 if not self._song_finished:
                     self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))
                 else:
@@ -71,7 +73,9 @@ class Handler:
         if self.sound:
             self.sliderMoving = 0
             if not self.sliderPos == 100:
-                GLib.timeout_add(interval=1000, function=self.timeTracker)  # start timer
+                if self._timer_id:
+                    GLib.source_remove(self._timer_id)
+                self._timer_id = GLib.timeout_add(interval=1000, function=self.timeTracker)  # start timer
                 self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))  # sound.play is in ms
                 stop_start.set_label("gtk-media-pause")
                 self.PlayButtonMode = 1
