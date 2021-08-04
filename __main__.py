@@ -1,5 +1,3 @@
-# TODO: Add jump to start when song ends
-
 import audioplayer
 import gi
 import time
