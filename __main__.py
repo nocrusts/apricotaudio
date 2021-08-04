@@ -15,7 +15,8 @@ class Handler:
         self.sound = None  # audioplayer object
         self.sliderPos = 0  # slider's position
         self.s_elapsed = 0  # tracks seconds elapsed according to the slider position.
-        self._song_finished = 0
+        self._song_finished = False
+        self._timer_running = 0
 
     def onDestroy(self, *args):  # used for closing window
         Gtk.main_quit()
@@ -45,11 +46,14 @@ class Handler:
         STElapsed.set_text("0:00 / " + str(self.sound.DisplaySongLength))
 
     def playClicked(self, widget):
-        if self.sound: # ensure that self.sound exists first, otherwise we get an error.
+        if self.sound:  # ensure that self.sound exists first, otherwise we get an error.
             if self.PlayButtonMode == 0:
                 print("Starting Sound.")
                 GLib.timeout_add(interval=1000, function=self.timeTracker)  # start timer
-                self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))
+                if not self._song_finished:
+                    self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))
+                else:
+                    self.sound.play(0)
                 widget.set_label("gtk-media-pause")
                 self.PlayButtonMode = 1
             else:
@@ -80,12 +84,20 @@ class Handler:
 
     def timeTracker(self):
         songPosition = int((self.sliderPos / 100) * self.sound.audio_length) + (self.s_elapsed * 1000)
+        if self._song_finished:
+            self.sliderPos = 0
+            self.s_elapsed = 0
+            songPosition = 0
+            self._song_finished = False
         self.s_elapsed += 1
         # Formula: percentage of slider completed * audio length = slider's position in ms
         # slider's position in ms + time elapsed in ms = final time
         # songPositionSec = round(songPosition / 1000, 2) # rough estimate (unused for now)
 
         if songPosition >= self.sound.audio_length and self.sliderMoving == 0:
+            stop_start.set_label("gtk-media-play")
+            self.PlayButtonMode = 0
+            self._song_finished = True
             return False
 
         slider_val.set_value(round((songPosition / self.sound.audio_length * 100), 2))
@@ -95,8 +107,10 @@ class Handler:
 
         STRemaining.set_text("-" + self.sound.generateDisplayRemaining(songPosition))
 
-        if not self.sound.isPlaying:  # songPosition >= self.sound.audio_length:
+        if not self.sound.isPlaying:
             self.s_elapsed = 0
+            stop_start.set_label("gtk-media-play")
+            self.PlayButtonMode = 0
             return False
         else:
             return True
