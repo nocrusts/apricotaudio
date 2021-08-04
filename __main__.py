@@ -1,3 +1,5 @@
+# TODO: Add jump to start when song ends
+
 import audioplayer
 import gi
 import time
@@ -13,6 +15,7 @@ class Handler:
         self.sound = None  # audioplayer object
         self.sliderPos = 0  # slider's position
         self.s_elapsed = 0  # tracks seconds elapsed according to the slider position.
+        self._song_finished = 0
 
     def onDestroy(self, *args):  # used for closing window
         Gtk.main_quit()
@@ -63,10 +66,11 @@ class Handler:
     def sliderReleased(self, widget, event):
         if self.sound:
             self.sliderMoving = 0
-            GLib.timeout_add(interval=1000, function=self.timeTracker)  # start timer
-            self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))  # sound.play is in ms
-            stop_start.set_label("gtk-media-pause")
-            self.PlayButtonMode = 1
+            if not self.sliderPos == 100:
+                GLib.timeout_add(interval=1000, function=self.timeTracker)  # start timer
+                self.sound.play(int((self.sliderPos / 100) * self.sound.audio_length))  # sound.play is in ms
+                stop_start.set_label("gtk-media-pause")
+                self.PlayButtonMode = 1
 
     def sliderPressed(self, widget, event):
         if self.PlayButtonMode == 1:
@@ -75,14 +79,14 @@ class Handler:
             self.PlayButtonMode = 0
 
     def timeTracker(self):
-        self.s_elapsed += 1
         songPosition = int((self.sliderPos / 100) * self.sound.audio_length) + (self.s_elapsed * 1000)
+        self.s_elapsed += 1
         # Formula: percentage of slider completed * audio length = slider's position in ms
         # slider's position in ms + time elapsed in ms = final time
         # songPositionSec = round(songPosition / 1000, 2) # rough estimate (unused for now)
 
         if songPosition >= self.sound.audio_length and self.sliderMoving == 0:
-            return False # funny number prevention
+            return False
 
         slider_val.set_value(round((songPosition / self.sound.audio_length * 100), 2))
         # the slider is a percentage of the song completed
@@ -91,7 +95,7 @@ class Handler:
 
         STRemaining.set_text("-" + self.sound.generateDisplayRemaining(songPosition))
 
-        if not self.sound.isPlaying or songPosition >= self.sound.audio_length:
+        if not self.sound.isPlaying:  # songPosition >= self.sound.audio_length:
             self.s_elapsed = 0
             return False
         else:

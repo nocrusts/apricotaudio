@@ -51,6 +51,8 @@ class PlaySound:
         seconds = int((ms/1000) % 60)
         if seconds == 0:
             seconds = "00"
+        elif seconds < 10:
+            seconds = "0" + str(seconds)
         minutes = int((ms/60000) % 60)
         #  maybe adding hours at some point, not right now.
         self.DisplaySongLength = str(minutes) + ":" + str(seconds)
@@ -74,7 +76,10 @@ class PlaySound:
         elif seconds < 10:
             seconds = "0" + str(seconds)
         minutes = int((timeRemaining/60000) % 60)
-        self.DisplayRemaining = str(minutes) + ":" + str(seconds)  # not available until this function is called once
+        if not ms > self.audio_length:
+            self.DisplayRemaining = str(minutes) + ":" + str(seconds)  # not available until this function is called
+        else:
+            self.DisplayRemaining = "0:00"
         return self.DisplayRemaining
 
 #  Workflow:
